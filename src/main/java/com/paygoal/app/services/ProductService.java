@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Slf4j
 @Transactional
@@ -23,6 +26,19 @@ public class ProductService {
     @Autowired
     ProductMapper productMapper;
 
+    public List<ProductResponseDto> getProducts() {
+        return productMapper.toListDto(productRepository.findAll());
+    }
+
+    public ProductResponseDto getProductById(Long id) {
+        Optional<ProductEntity> productEntityOptional = productRepository.findById(id);
+        if(productEntityOptional.isPresent()) {
+            return productMapper.fromEntityToDto(productEntityOptional.get());
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
         ProductEntity productEntity = productMapper.fromDtoToEntity(productRequestDto);
         productRepository.save(productEntity);
@@ -30,4 +46,25 @@ public class ProductService {
         return productMapper.fromEntityToDto(productEntity);
     }
 
+    public ProductResponseDto updateProduct(ProductRequestDto productRequestDto, Long id) {
+        Optional<ProductEntity> productEntityOptional = productRepository.findById(id);
+        if(productEntityOptional.isPresent()) {
+            ProductEntity productEntity = productMapper.fromDtoToEntity(productRequestDto);
+            productEntity.setId(id);
+            productRepository.save(productEntity);
+            return productMapper.fromEntityToDto(productEntity);
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    public ProductResponseDto deleteProduct(Long id) {
+        Optional<ProductEntity> productEntityOptional = productRepository.findById(id);
+        if(productEntityOptional.isPresent()) {
+            productRepository.deleteById(id);
+            return productMapper.fromEntityToDto(productEntityOptional.get());
+        } else {
+            throw new RuntimeException();
+        }
+    }
 }
