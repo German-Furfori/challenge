@@ -45,7 +45,14 @@ public class ProductService {
         return productMapper.fromEntityToDto(productEntity);
     }
 
+    public ProductResponseDto getProductByName(String nombre) {
+        ProductEntity productEntity = utils.verifyProductName(nombre);
+
+        return productMapper.fromEntityToDto(productEntity);
+    }
+
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
+        utils.verifyIntegrityName(productRequestDto.getNombre());
         ProductEntity productEntity = productMapper.fromDtoToEntity(productRequestDto);
         productRepository.save(productEntity);
         log.info("Producto creado: " + productEntity.getNombre());
@@ -58,6 +65,7 @@ public class ProductService {
         ProductEntity productEntity = productMapper.fromDtoToEntity(productRequestDto);
         productEntity.setId(id);
         productRepository.save(productEntity);
+        log.info("Producto modificado: " + productEntity.getId());
 
         return productMapper.fromEntityToDto(productEntity);
     }
@@ -65,7 +73,9 @@ public class ProductService {
     public ProductResponseDto deleteProduct(Long id) {
         ProductEntity productEntity = utils.verifyProductId(id);
         productRepository.deleteById(id);
+        log.info("Producto eliminado: " + productEntity.getId());
 
         return productMapper.fromEntityToDto(productEntity);
     }
+
 }

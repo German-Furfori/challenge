@@ -55,6 +55,21 @@ public class ProductController {
         return ResponseEntity.ok(productResponseDto);
     }
 
+    @GetMapping(value = "/products/name/{name}")
+    public ResponseEntity<?> getProductByName(@PathVariable(name = "name") String nombre) {
+        Map<String, Object> response = new HashMap<>();
+        ProductResponseDto productResponseDto;
+        try {
+            productResponseDto = productService.getProductByName(nombre);
+        } catch (RepositoryAccessException e) {
+            response.put(ERROR_CODE, HttpStatus.NOT_FOUND.value());
+            response.put(ERROR_MESSAGE, e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(productResponseDto);
+    }
+
     @PostMapping(value = "/create")
     public ResponseEntity<?> createProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
         Map<String, Object> response = new HashMap<>();
@@ -70,7 +85,7 @@ public class ProductController {
         return ResponseEntity.ok(productResponseDto);
     }
 
-    @PutMapping(value = "/update/{id}")
+    @PutMapping(value = "/product/{id}")
     public ResponseEntity<?> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto, @PathVariable(name = "id") Long id) {
         Map<String, Object> response = new HashMap<>();
         ProductResponseDto productResponseDto;
@@ -85,7 +100,7 @@ public class ProductController {
         return ResponseEntity.ok(productResponseDto);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "/product/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable(name = "id") Long id) {
         Map<String, Object> response = new HashMap<>();
         ProductResponseDto productResponseDto;

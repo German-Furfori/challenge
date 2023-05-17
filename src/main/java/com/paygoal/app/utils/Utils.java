@@ -29,6 +29,25 @@ public class Utils {
         return entity.get();
     }
 
+    public ProductEntity verifyProductName(String nombre) {
+        if(nombre == null) {
+            throw new RepositoryAccessException(READ_ACCESS_EXCEPTION_INCORRECT_NAME);
+        }
+        Optional<ProductEntity> entity = productRepository.findByName(nombre);
+        if(entity.isEmpty()) {
+            throw new RepositoryAccessException(READ_ACCESS_EXCEPTION_PRODUCT_NAME_NOT_FOUND);
+        }
+
+        return entity.get();
+    }
+
+    public void verifyIntegrityName(String nombre) {
+        Optional<ProductEntity> entity = productRepository.findByName(nombre);
+        if(entity.isPresent()) {
+            throw new RepositoryAccessException(READ_ACCESS_EXCEPTION_INCORRECT_INPUT_NAME);
+        }
+    }
+
     public List<ProductEntity> verifyEmptyList() {
         List<ProductEntity> productEntityList = productRepository.findAll();
         if(productEntityList.isEmpty()) {
