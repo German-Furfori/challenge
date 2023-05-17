@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
         "com.paygoal.app.repositories" +
         "com.paygoal.app.utils" })
 public class AppConfiguration {
-
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
